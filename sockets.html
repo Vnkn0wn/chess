@@ -1,0 +1,198 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Jan Geerlings">
+   <meta name="GENERATOR" content="Mozilla/4.76 [en] (Win98; U) [Netscape]">
+   <title>sockets</title>
+</head>
+<body>
+<b><font size=+2>Sockets</font></b>
+<br>Voor communicatie tussen twee pc's fungeert &eacute;&eacute;n pc als
+server en de ander als client. De server cre&euml;ert een ServerSocket(port,backlog)
+met als parameters een (vrij) poortnummer en het maximale aantal backlog
+(requests for connection, simultane connecties). Ontvangt de ServerSocket
+een request for connection dan maak je een nieuwe Socket voor deze connectie.
+<br>De client hoeft alleen maar een nieuwe socket aan te maken met daarin
+het IP-adres en poortnummer van de server. Is de verbinding tot stand gekomen
+dan is full-duplex communicatie mogelijk via de DataInputStream en DataOutputStream
+objecten. In onderstaand voorbeeld wordt een string ingelezen met readUTF
+en geschreven met writeUTF. Dit is de Java machineonafhankelijke UTF-8
+codering voor strings (zie Java-API).
+<br>In onderstaand plaatje is de relatie tussen server en client weergegeven.
+Een ServerSocket kan dus meerdere connecties ondersteunen. Zou je hiervan
+gebruik willen maken dan moet je voor elke connectie een nieuwe <i>thread</i>
+maken. Dit proces handelt dan de communicatie af met die ene pc.
+<p><img SRC="sockets.gif" height=167 width=445>
+<p>Een voorbeeld programma van een server is:
+<table BORDER CELLPADDING=3 COLS=1 WIDTH="100%" >
+<tr>
+<td><tt>import java.awt.*;&nbsp;</tt>
+<br><tt>import java.net.*;&nbsp; //sockets</tt>
+<br><tt>import java.io.*;&nbsp;&nbsp; //DataIOStreams</tt>
+<p><tt>public class Server extends Frame</tt>
+<br><tt>{TextArea display=new TextArea("tekst\n");</tt>
+<p><tt>&nbsp;&nbsp; public Server()&nbsp;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; {setLayout(null);&nbsp;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; setSize(400,400);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; setTitle("Server");</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; super.setVisible(true);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; this.addWindowListener(new MyWindow());</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; display.setBounds(10,25,380,150);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; add(display);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; }&nbsp;</tt>
+<p><tt>&nbsp;&nbsp; public void runServer()</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; {ServerSocket server;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; Socket sock;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; DataOutputStream output;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; DataInputStream input;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; try</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {System.out.println("Server
+is running");</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; server=new ServerSocket(5500,100);
+//create server</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while (true)</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {sock=server.accept();
+//wait for connection</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; display.append("From:
+"+sock.getInetAddress().getHostName()+"\n");</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; input=new
+DataInputStream(sock.getInputStream());</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; output=new
+DataOutputStream(sock.getOutputStream());</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; output.writeUTF("Hello
+there");</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; display.append("Received:
+"+input.readUTF()+"\n");</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sock.close();</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; catch (IOException ex)</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {ex.printStackTrace();</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; display.append("bye\n");</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; }</tt>
+<p><tt>&nbsp; class MyWindow extends java.awt.event.WindowAdapter</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; {public void windowClosing(java.awt.event.WindowEvent
+event)</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {System.out.println("Server
+shut down");</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; setVisible(false);&nbsp;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dispose();&nbsp;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.exit(0);&nbsp;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; }</tt>
+<p><tt>&nbsp; public static void main(String[] args)</tt>
+<br><tt>&nbsp; {System.out.println("een server programma");</tt>
+<br><tt>&nbsp;&nbsp; Server s=new Server();</tt>
+<br><tt>&nbsp;&nbsp; s.runServer();</tt>
+<br><tt>&nbsp; }</tt>
+<br><tt>}</tt></td>
+</tr>
+</table>
+In een eindeloze lus wacht de server voor requests. Wil een pc een connectie
+opzetten dan wordt voor hiervoor een socket aangemaakt. In een TextArea
+wordt afgedrukt van welke host het request kwam. Vervolgens wordt een DataInputStream
+en DataOutputStream aangemaakt. Een string wordt naar de client gestuurd
+("Hello there") en het ontvangen antwoord wordt toegevoegd (append) aan
+een TextArea. Hierna wordt de connectie verbroken. De "\n" in display.append
+is de C-notatie voor "nieuwe regel" (de &lt;enter> toets).
+<p>Een programma voor de client ziet er als volgt uit:
+<table BORDER CELLPADDING=3 COLS=1 WIDTH="100%" >
+<tr>
+<td><tt>import java.awt.*;&nbsp; //abstract windowing toolkit</tt>
+<br><tt>import java.net.*;&nbsp; //networking</tt>
+<br><tt>import java.io.*;&nbsp;&nbsp; //DataIOStreams</tt>
+<p><tt>public class Client extends Frame</tt>
+<br><tt>{TextArea display=new TextArea("tekst\n");</tt>
+<br><tt>&nbsp;</tt>
+<br><tt>&nbsp;&nbsp; public Client()&nbsp;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; {setLayout(null);&nbsp;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; setSize(400,400);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; setTitle("Client");</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; super.setVisible(true);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; this.addWindowListener(new MyWindow());</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; display.setBounds(10,200,380,150);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; add(display);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; }&nbsp;</tt>
+<p><tt>&nbsp;&nbsp; public void runClient()</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; {Socket client;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; DataOutputStream output;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; DataInputStream input;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; try{System.out.println("Client is running");</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; client=new Socket(InetAddress.getLocalHost(),5500);
+//create socket</tt>
+<br><tt><font color="#009900">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; client=new
+Socket(InetAddress.getByName("demeter.cs.utwente.nl"),5500);</font></tt>
+<br><tt><font color="#009900">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; client=new
+Socket("130.89.220.2",5500); //create socket</font></tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; display.append("To:
+"+client.getInetAddress().getHostName()+"\n");</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; input=new DataInputStream(client.getInputStream());</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; output=new DataOutputStream(client.getOutputStream());</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; display.append("Received:
+"+input.readUTF()+"\n");</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; output.writeUTF("Bye
+and see you again soon");</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; client.close();</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; catch (IOException ex)</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {ex.printStackTrace();</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; display.append("bye\n");</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; }</tt>
+<p><tt>&nbsp; class MyWindow extends java.awt.event.WindowAdapter</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; {public void windowClosing(java.awt.event.WindowEvent
+event)</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {System.out.println("Client
+shut down");</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; setVisible(false);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dispose();&nbsp;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.exit(0);&nbsp;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; }</tt>
+<p><tt>&nbsp; public static void main(String[] args)</tt>
+<br><tt>&nbsp; {System.out.println("eerst de server runnen, daarna de client");</tt>
+<br><tt>&nbsp;&nbsp; Client c =new Client();</tt>
+<br><tt>&nbsp;&nbsp; c.runClient();</tt>
+<br><tt>&nbsp; }</tt>
+<br><tt>}</tt></td>
+</tr>
+</table>
+Voor het IP-adres van de server kun je gebruiken:
+<br>&nbsp;- computernaam van de de server
+<br>&nbsp;- IP-adres van de server
+<br>&nbsp;- LocalHost als de server op jouw machine draait
+<br>De laatste is in het voorgaande programma gebruikt. De beide andere
+zijn in het programma van commentaar slashes voorzien. Voor testdoeleinden
+is het namelijk handig dat zowel de server als client op je eigen machine
+draait.
+<br>Daartoe de volgende opgave:
+<p><b><font size=+1>Opgave 1</font></b>
+<br>Maak een nieuwe directory en kopieer de Server.java en Client.java.
+Compileer beide programma's.
+<br>Ga naar de command prompt en toets in:
+<br><tt>&nbsp; c:\javaw Server</tt>
+<br>Verplaats het server window. Click in het command window en toets in:
+<br><tt>&nbsp; c:\java Client</tt>
+<br>Hetzelfde kun je bereiken door een tweede command window te openen.
+In het ene window start je de server, in het andere de client.
+<p>Leuker is natuurlijk tussen twee computer te communiceren. Daartoe moet
+je de naam of IP-adres van de server weten. Dit kun je in een command-window
+opvragen met:
+<p><tt>&nbsp; c:\ipconfig /all</tt>
+<p><b><font size=+1>Opgave 2</font></b>
+<br>Vraag een teamlid of hij als server wil fungeren en test het programma
+tussen twee computers. Vraag een derde teamlid of hij ook even als client
+wil optreden. En een vierde...
+<p><b><font size=+1>Opgave 3</font></b>
+<br>Leuker is natuurlijk als je echt tussen twee computers kunt communiceren.
+Verdeel daarom je team in koppels. Kies een (server) poortnummer waarvan
+je denkt dat geen van de andere koppels die zullen kiezen. Spreek met elkaar
+af wie de server maakt en wie de client maakt. Bespreek een protocol om
+de sessie te be&euml;indigen. Zet de DataInputStream en DataOutputStream
+bij de attributen van je Server c.q. Client, zodat elke methode/class erbij
+kan Voeg een actionPerformed toe om zelf tekst in te voeren. Heb je een
+thread nodig om het proces van zenden en ontvangen te scheiden?
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Jan Geerlings">
+   <meta name="GENERATOR" content="Mozilla/4.76 [en] (Win98; U) [Netscape]">
+   <title>socket</title>
+</head>
+<body>
+<tt><font size=+1>import java.awt.*;</font></tt>
+<br><b><tt><font size=+1>import java.net.*;&nbsp; //sockets</font></tt></b>
+<br><b><tt><font size=+1>import java.io.*;&nbsp;&nbsp; //DataIOStreams</font></tt></b>
+<p><tt><font size=+1>public class Server extends Frame</font></tt>
+<br><tt><font size=+1>{<b>TextArea t</b>=new TextArea("tekst\n");</font></tt>
+<p><tt><font size=+1>&nbsp;&nbsp; public Server()</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp; {//de standaard initialisaties</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp; <b>t</b>.setBounds(10,25,380,150);</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp; add(<b>t</b>);</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp; }</font></tt>
+<p><tt><font size=+1>&nbsp;&nbsp; public void runServer()</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp; {<b>ServerSocket serv;</b></font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp; <b>Socket s;</b></font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp; DataOutputStream <b>o</b>;</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp; DataInputStream <b>i</b>;</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp; <b>try</b></font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {System.out.println("Server
+is running");</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<b>serv=new
+ServerSocket(5500,100);</b> //create server</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while
+(true)</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<b>s=server.accept();</b> //wait for connection</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+t.append(""+<b>s.getInetAddress().getHostName()</b>+"\n");</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+i=new DataInputStream(<b>s</b>.getInputStream());</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+o=new DataOutputStream(<b>s</b>.getOutputStream());</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<b>o.writeUTF</b>("Hello there");</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+t.append("Received: "+<b>i.readUTF()</b>+"\n");</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<b>sock.close();</b></font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp; <b>catch</b> (IOException
+ex)</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {ex.printStackTrace();</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp; display.append("bye\n");</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp; }</font></tt>
+<p><tt><font size=+1>&nbsp;&nbsp; class MyWindow extends java.awt.event.WindowAdapter</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {public void windowClosing(java.awt.event.WindowEvent
+event)</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{System.out.println("Server shut down");</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+dispose();</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+System.exit(0);</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</font></tt>
+<p><tt><font size=+1>&nbsp;&nbsp; public static void main(String[] args)</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp; {System.out.println("een server programma");</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp; Server ser=new Server();</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp; ser.runServer();</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp; }</font></tt>
+<br><tt><font size=+1>}</font></tt>
+</body>
+</html>

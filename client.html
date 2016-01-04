@@ -1,0 +1,60 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Jan Geerlings">
+   <meta name="GENERATOR" content="Mozilla/4.76 [en] (Win98; U) [Netscape]">
+   <title>client</title>
+</head>
+<body>
+<tt><font size=+1>import java.awt.*;&nbsp; //abstract windowing toolkit</font></tt>
+<br><b><tt><font size=+1>import java.net.*;&nbsp; //networking</font></tt></b>
+<br><b><tt><font size=+1>import java.io.*;&nbsp;&nbsp; //DataIOStreams</font></tt></b>
+<p><tt><font size=+1>public class Client extends Frame</font></tt>
+<br><tt><font size=+1>{TextArea t=new TextArea("tekst\n");</font></tt>
+<p><tt><font size=+1>&nbsp; public Client()</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp; {//de standaard initialisaties</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp; t.setBounds(10,200,380,150);</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp; add(t);</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp; }</font></tt>
+<p><tt><font size=+1>&nbsp; public void runClient()</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp; {Socket <b>s</b>;</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp; DataOutputStream <b>o</b>;</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp; DataInputStream <b>i</b>;</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp; try{System.out.println("Client
+is running");</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>s</b>=<b>new</b>
+Socket(<b>InetAddress.getLocalHost(),5500)</b>;</font></tt>
+<br><tt><font size=+1>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp; <b>s</b>=<b>new</b>
+Socket(<b>InetAddress.getByName("j.cs.utwente.nl"),5500</b>);</font></tt>
+<br><tt><font size=+1>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp; <b>s</b>=<b>new</b>
+Socket(<b>"130.89.220.2",5500</b>);</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t.append("To:
+"+<b>s.getInetAddress().getHostName()</b>+"\n");</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>i</b>=<b>new</b>
+DataInputStream(<b>s</b>.getInputStream());</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>o</b>=<b>new</b>
+DataOutputStream(<b>s</b>.getOutputStream());</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t.append("Received:
+"+<b>i</b>.readUTF()+"\n");</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; o.writeUTF("Bye
+and see you again soon");</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>s.close()</b>;</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp; catch (IOException ex)</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {ex.printStackTrace();</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp; t.append("bye\n");</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp; }</font></tt>
+<p><tt><font size=+1>&nbsp; class MyWindow extends java.awt.event.WindowAdapter</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp; {//de standaard window-closing</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp; }</font></tt>
+<p><tt><font size=+1>&nbsp; public static void main(String[] args)</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp; {System.out.println("eerst de server
+runnen, daarna de client");</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp; Client c =new Client();</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp;&nbsp; c.runClient();</font></tt>
+<br><tt><font size=+1>&nbsp;&nbsp; }</font></tt>
+<br><tt><font size=+1>&nbsp;}</font></tt>
+</body>
+</html>
